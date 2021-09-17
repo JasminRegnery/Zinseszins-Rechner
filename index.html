@@ -1,74 +1,71 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Kostenfunktion</title>
+	<title>ZinsesZins-Rechner</title>
 	<script>
-		function fKostenfunktion() {
-			var vK; //K(x)
-			var vE; //E(x)
-			var vG; //G(x)
-			var vk; //variable Stückkosten
-			var vp; //Stückpreis 
-			var vFixkosten;
-			var vStart = 1000;
-			var vMenge; //Produktionsmengen
-			
-			var vBEP; //Break-Even-Point
-			var vGewinnschwelle;
+		function fRechner() {
+			var vZinsen;
+			var vJahr = 0;
+			var vEndkapital;
 			var vAusgabe = "";
+			var vZinssatz = document.getElementById("idZinssatz").value;
+			var vStartkapital = document.getElementById("idStartkapital").value;
+			var vLaufzeit = document.getElementById("idLaufzeit").value;
 			
-			vk = parseFloat(document.getElementById("idk").value);
-			vp = parseFloat(document.getElementById("idp").value);
-			vFixkosten = parseFloat(document.getElementById("idFixkosten").value);
-			vMenge = parseFloat(document.getElementById("idMenge").value);
+			var vZinseszins = 0;
+			var vGesamtzinsen;
 			
 			vAusgabe = vAusgabe + "<table border = 1>";
-			vAusgabe = vAusgabe + "<tr><th>Menge</th>";
-			vAusgabe = vAusgabe + "<th>K(x) = mx + b</th>";
-			vAusgabe = vAusgabe + "<th>E(x) = p*x</th>";
-			vAusgabe = vAusgabe + "<th>G(x) = E(x) - K(x)</th>";
-			vAusgabe = vAusgabe + "<th>Bemerkung</th></tr>";
-			
-			while (vStart <= vMenge) {
-				vK = vFixkosten + (vk* vStart);
-				vE = vp*vStart;
-				vG = vE - vK;
+			vAusgabe = vAusgabe + "<tr><th>Jahr</th>";
+			vAusgabe = vAusgabe + "<th>Jahresstartkapital (01.01.)</th>";
+			vAusgabe = vAusgabe + "<th>Zinsen (31.12.)</th>";
+			vAusgabe = vAusgabe + "<th>Jahresendkapital (31.12.)</th></tr>";
+
+
+			while (vLaufzeit >= vJahr) {
+				vZinsen = vStartkapital*(vZinssatz/100);
+				vEndkapital = parseFloat(vZinsen) + parseFloat(vStartkapital);
 				
-				vAusgabe = vAusgabe + "<tr><td>" + vStart + "</td>";
-				vAusgabe = vAusgabe + "<td>" + vK.toFixed(2) + " €</td>";
-				vAusgabe = vAusgabe + "<td>" + vE.toFixed(2) + " €</td>";
-					
-					if (vG < 0) {
-						vAusgabe = vAusgabe + "<td style=color:red>" + vG.toFixed(2) + " €</td>";
-						vAusgabe = vAusgabe + "<td>Verlust</td></tr>";
+					if (vZinsen >= 22.50) {
+						vAusgabe = vAusgabe + "<tr><td style=Background-color:green>" + vJahr + "</td>";
+						vAusgabe = vAusgabe + "<td style=Background-color:green>" + vStartkapital + " €</td>";
+						vAusgabe = vAusgabe + "<td style=Background-color:green>" + vZinsen.toFixed(2) + " €</td>";
+						vAusgabe = vAusgabe + "<td style=Background-color:green>" + vEndkapital.toFixed(2) + " €</td></tr>";
+					} else if (vZinsen < 0) {
+						vAusgabe = vAusgabe + "<tr><td style=Background-color:red>" + vJahr + "</td>";
+						vAusgabe = vAusgabe + "<td style=Background-color:red>" + vStartkapital + " €</td>";
+						vAusgabe = vAusgabe + "<td style=Background-color:red>" + vZinsen.toFixed(2) + " €</td>";
+						vAusgabe = vAusgabe + "<td style=Background-color:red>" + vEndkapital.toFixed(2) + " €</td></tr>";
 					} else {
-						vAusgabe = vAusgabe + "<td>" + vG.toFixed(2) + " €</td>";
-						vAusgabe = vAusgabe + "<td>Gewinn</td></tr>";
+						vAusgabe = vAusgabe + "<tr><td>" + vJahr + "</td>";
+						vAusgabe = vAusgabe + "<td>" + vStartkapital + " €</td>";
+						vAusgabe = vAusgabe + "<td>" + vZinsen.toFixed(2) + " €</td>";
+						vAusgabe = vAusgabe + "<td>" + vEndkapital.toFixed(2) + " €</td></tr>";
 					}
 				
-				vStart = vStart + 1000;
+				vStartkapital = vEndkapital.toFixed(2);
+				
+					vGesamtzinsen = vZinsen + vZinseszins;
+					vZinseszins = vGesamtzinsen;
+				
+				vJahr++;
 			}
-
+			
 			vAusgabe = vAusgabe + "</table>";
 			
-			vBEP = vFixkosten /(vp - vk);
-			vAusgabe = vAusgabe + "<br>Break-Even-Point: " + vBEP + " Stück<br>";
-			
-			vGewinnschwelle = vBEP * vp;
-			vAusgabe = vAusgabe + "Gewinnschwelle: " + vGewinnschwelle.toFixed(2) + " €";
+			vAusgabe = vAusgabe + "<br>Gesamtkosten nach Laufzeit: ";
+			vAusgabe = vAusgabe + vGesamtzinsen.toFixed(2) + " €";
 			
 			document.getElementById("idAusgabe").innerHTML = vAusgabe;
 		}
 	</script>
-	
 </head>
 <body>
-	<h1>Gewinn- und Erlösfunktion</h1>
-	variable Stückkosten (k): <input id="idk" size="6" typ="text" value="4.50">
-	Fixkosten: <input id="idFixkosten" size="6" typ="text" value="12800"><br><br>
-	Produktionsmenge (x): <input id="idMenge" size="6" typ="text" value="20000"> 
-	Stückpreis (p): <input id="idp" size="6" typ="text" value="6"><br><br>
-	<button onClick="fKostenfunktion();">Kostentabelle erstellen</button><br><br>
+	<h1>Zinseszins-Rechner</h1>
+	Startkapital: <input id="idStartkapital" type="text" value="1000"> € <br><br>
+	Zinssatz: <input id="idZinssatz" type="text" value="2"> % <br>
+	Laufzeit: <input id="idLaufzeit" type="text" value="5"> Jahre <br><br>
+	<button onClick="fRechner();">Zinsen berechnen</button><br><br>
 	<div id="idAusgabe"></div>
 </body>
 </html>
